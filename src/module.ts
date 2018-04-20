@@ -14,6 +14,9 @@ import { INativeRecorderAudioWorkletNode, IRecorderAudioWorkletNode } from './in
 import { TAnyRecorderAudioWorkletNodeOptions, TState } from './types';
 import { worklet } from './worklet/worklet';
 
+export * from './interfaces';
+export * from './types';
+
 const blob = new Blob([ worklet ], { type: 'application/javascript; charset=utf-8' });
 
 const url = URL.createObjectURL(blob);
