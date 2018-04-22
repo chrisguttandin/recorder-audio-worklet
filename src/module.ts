@@ -1,12 +1,12 @@
 import { IWorkerEvent } from 'broker-factory';
 import { generateUniqueNumber } from 'fast-unique-numbers';
 import {
-    IAudioContext,
     IAudioWorkletNode,
     IAudioWorkletNodeConstructor,
     INativeAudioWorkletNode,
     INativeAudioWorkletNodeConstructor,
-    TNativeAudioContext
+    TContext,
+    TNativeContext
 } from 'standardized-audio-context';
 import { IWorkerErrorMessage, IWorkerResultMessage } from 'worker-factory';
 import { isSupportingTransferables } from './helpers/is-supporting-transferables';
@@ -27,7 +27,7 @@ export const addRecorderAudioWorkletModule = (addAudioWorkletModule: (url: strin
 
 export function createRecorderAudioWorkletNode <T extends IAudioWorkletNodeConstructor | INativeAudioWorkletNodeConstructor> (
     audioWorkletNodeConstructor: T,
-    context: T extends IAudioWorkletNodeConstructor ? IAudioContext : TNativeAudioContext,
+    context: T extends IAudioWorkletNodeConstructor ? TContext : TNativeContext,
     options: Partial<TAnyRecorderAudioWorkletNodeOptions<T>> = { }
 ): T extends IAudioWorkletNodeConstructor ? IRecorderAudioWorkletNode : INativeRecorderAudioWorkletNode {
     type TAnyAudioWorkletNode = T extends IAudioWorkletNodeConstructor ? IAudioWorkletNode : INativeAudioWorkletNode;
