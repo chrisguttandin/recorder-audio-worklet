@@ -52,6 +52,7 @@ describe('module', () => {
             describe(`with the ${ description }`, () => {
 
                 let context;
+                let recorderAudioWorkletNode;
 
                 afterEach(() => {
                     if (context.close !== undefined) {
@@ -59,56 +60,42 @@ describe('module', () => {
                     }
                 });
 
-                beforeEach(() => {
+                beforeEach(async () => {
                     context = createContext();
 
-                    return addRecorderAudioWorkletModule(createAddAudioWorkletModule(context));
+                    await addRecorderAudioWorkletModule(createAddAudioWorkletModule(context));
+
+                    recorderAudioWorkletNode = createRecorderAudioWorkletNode(audioWorkletNodeConstructor, context);
                 });
 
-                describe('constructor()', () => {
+                it('should return an instance of the EventTarget interface', () => {
+                    expect(recorderAudioWorkletNode.addEventListener).to.be.a('function');
+                    expect(recorderAudioWorkletNode.dispatchEvent).to.be.a('function');
+                    expect(recorderAudioWorkletNode.removeEventListener).to.be.a('function');
+                });
 
-                    let recorderAudioWorkletNode;
+                it('should return an instance of the AudioNode interface', () => {
+                    expect(recorderAudioWorkletNode.channelCount).to.equal(2);
+                    expect(recorderAudioWorkletNode.channelCountMode).to.equal('explicit');
+                    expect(recorderAudioWorkletNode.channelInterpretation).to.equal('speakers');
+                    expect(recorderAudioWorkletNode.connect).to.be.a('function');
+                    expect(recorderAudioWorkletNode.context).to.be.an.instanceOf(context.constructor);
+                    expect(recorderAudioWorkletNode.disconnect).to.be.a('function');
+                    expect(recorderAudioWorkletNode.numberOfInputs).to.equal(1);
+                    expect(recorderAudioWorkletNode.numberOfOutputs).to.equal(0);
+                });
 
-                    beforeEach(() => {
-                        recorderAudioWorkletNode = createRecorderAudioWorkletNode(audioWorkletNodeConstructor, context);
-                    });
+                it('should return an instance of the AudioWorkletNode interface', () => {
+                    expect(recorderAudioWorkletNode.onprocessorerror).to.be.null;
+                    expect(recorderAudioWorkletNode.parameters).not.to.be.undefined;
+                });
 
-                    it('should return an instance of the EventTarget interface', () => {
-                        expect(recorderAudioWorkletNode.addEventListener).to.be.a('function');
-                        expect(recorderAudioWorkletNode.dispatchEvent).to.be.a('function');
-                        expect(recorderAudioWorkletNode.removeEventListener).to.be.a('function');
-                    });
-
-                    it('should return an instance of the AudioNode interface', () => {
-                        expect(recorderAudioWorkletNode.channelCount).to.equal(2);
-                        expect(recorderAudioWorkletNode.channelCountMode).to.equal('explicit');
-                        expect(recorderAudioWorkletNode.channelInterpretation).to.equal('speakers');
-                        expect(recorderAudioWorkletNode.connect).to.be.a('function');
-                        expect(recorderAudioWorkletNode.context).to.be.an.instanceOf(context.constructor);
-                        expect(recorderAudioWorkletNode.disconnect).to.be.a('function');
-                        expect(recorderAudioWorkletNode.numberOfInputs).to.equal(1);
-                        expect(recorderAudioWorkletNode.numberOfOutputs).to.equal(0);
-                    });
-
-                    it('should return an instance of the AudioWorkletNode interface', () => {
-                        expect(recorderAudioWorkletNode.onprocessorerror).to.be.null;
-                        expect(recorderAudioWorkletNode.parameters).not.to.be.undefined;
-                    });
-
-                    it('should return an instance of the RecorderAudioWorkletNode interface', () => {
-                        expect(recorderAudioWorkletNode.record).to.be.a('function');
-                        expect(recorderAudioWorkletNode.stop).to.be.a('function');
-                    });
-
+                it('should return an instance of the RecorderAudioWorkletNode interface', () => {
+                    expect(recorderAudioWorkletNode.record).to.be.a('function');
+                    expect(recorderAudioWorkletNode.stop).to.be.a('function');
                 });
 
                 describe('port', () => {
-
-                    let recorderAudioWorkletNode;
-
-                    beforeEach(() => {
-                        recorderAudioWorkletNode = createRecorderAudioWorkletNode(audioWorkletNodeConstructor, context);
-                    });
 
                     it('should throw an error', () => {
                         expect(() => {
