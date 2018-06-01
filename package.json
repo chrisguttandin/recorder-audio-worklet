@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
-    "broker-factory": "^1.2.26",
+    "broker-factory": "^1.2.27",
     "fast-unique-numbers": "^2.0.3",
     "recorder-audio-worklet-processor": "^1.0.4",
     "standardized-audio-context": "^12.1.15",
