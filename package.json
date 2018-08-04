@@ -12,7 +12,7 @@
     "babel-runtime": "^6.26.0",
     "broker-factory": "^1.3.3",
     "fast-unique-numbers": "^2.1.0",
-    "recorder-audio-worklet-processor": "^1.0.7",
+    "recorder-audio-worklet-processor": "^1.0.8",
     "standardized-audio-context": "^13.0.4",
     "tslib": "^1.9.3",
     "worker-factory": "^2.5.1"
