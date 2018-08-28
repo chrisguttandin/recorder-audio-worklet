@@ -20,12 +20,6 @@ describe('module', () => {
             expect(args[0]).to.match(/^blob:/);
         });
 
-        it('should return the return value of the given function', () => {
-            const returnValue = 'a fake return value';
-
-            expect(addRecorderAudioWorkletModule(() => returnValue)).to.equal(returnValue);
-        });
-
     });
 
     describe('createRecorderAudioWorkletNode()', () => {

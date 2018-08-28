@@ -19,10 +19,12 @@ export * from './types';
 
 const blob = new Blob([ worklet ], { type: 'application/javascript; charset=utf-8' });
 
-const url = URL.createObjectURL(blob);
+export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url: string) => Promise<void>) => {
+    const url = URL.createObjectURL(blob);
 
-export const addRecorderAudioWorkletModule = (addAudioWorkletModule: (url: string) => Promise<void>) => {
-    return addAudioWorkletModule(url);
+    await addAudioWorkletModule(url);
+
+    URL.revokeObjectURL(url);
 };
 
 export function createRecorderAudioWorkletNode <T extends IAudioWorkletNodeConstructor | INativeAudioWorkletNodeConstructor> (
