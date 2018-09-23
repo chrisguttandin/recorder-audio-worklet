@@ -8,8 +8,7 @@ import {
     TContext,
     TNativeContext
 } from 'standardized-audio-context';
-import { IWorkerErrorMessage, IWorkerResultMessage } from 'worker-factory';
-import { isSupportingTransferables } from './helpers/is-supporting-transferables';
+import { IWorkerErrorMessage, IWorkerResultMessage, isSupported } from 'worker-factory';
 import { INativeRecorderAudioWorkletNode, IRecorderAudioWorkletNode } from './interfaces';
 import { TAnyRecorderAudioWorkletNodeOptions, TState } from './types';
 import { worklet } from './worklet/worklet';
@@ -99,7 +98,7 @@ export function createRecorderAudioWorkletNode <T extends IAudioWorkletNodeConst
 
                     return postMessage({
                         method: 'record',
-                        params: { encoderPort, isSupportingTransferables: await isSupportingTransferables }
+                        params: { encoderPort }
                     });
                 };
             }
@@ -121,3 +120,5 @@ export function createRecorderAudioWorkletNode <T extends IAudioWorkletNodeConst
 
     return <TAnyRecorderAudioWorkletNode> audioWorkletNode;
 }
+
+export { isSupported };

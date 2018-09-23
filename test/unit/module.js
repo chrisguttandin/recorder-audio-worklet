@@ -1,5 +1,5 @@
 import { AudioContext, AudioWorkletNode } from 'standardized-audio-context';
-import { addRecorderAudioWorkletModule, createRecorderAudioWorkletNode } from '../../src/module';
+import { addRecorderAudioWorkletModule, createRecorderAudioWorkletNode, isSupported } from '../../src/module';
 import { spy } from 'sinon';
 
 describe('module', () => {
@@ -114,6 +114,14 @@ describe('module', () => {
             });
 
         }
+
+    });
+
+    describe('isSupported()', () => {
+
+        it('should export a function', () => {
+            expect(isSupported).to.be.a('function');
+        });
 
     });
 
