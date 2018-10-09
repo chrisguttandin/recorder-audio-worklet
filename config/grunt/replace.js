@@ -1,5 +1,3 @@
-const readFileSync = require('fs').readFileSync;
-
 module.exports = {
     worklet: {
         files: {
@@ -9,14 +7,13 @@ module.exports = {
         },
         options: {
             patterns: [ {
-                match: /export\sconst\sworklet\s=\s`(.*)`;/g,
-                replacement: () => {
-                    const workletPath = require.resolve('recorder-audio-worklet-processor/build/es5/worklet.min');
-                    const workletString = readFileSync(workletPath, { encoding: 'utf8' })
+                match: /(.*)/s,
+                replacement: (match) => {
+                    const workletString = match
                         .replace(/\\/g, '\\\\')
                         .replace(/\${/g, '\\${');
 
-                    return `export const worklet = \`${ workletString }\`;`;
+                    return `// tslint:disable-next-line:max-line-length\nexport const worklet = \`${ workletString }\`;\n`;
                 }
             } ]
         }

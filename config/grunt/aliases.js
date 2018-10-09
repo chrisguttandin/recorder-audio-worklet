@@ -1,6 +1,7 @@
 module.exports = {
     build: [
         'clean:build',
+        'webpack',
         'replace:worklet',
         'sh:build-es2015',
         'sh:build-es5',
