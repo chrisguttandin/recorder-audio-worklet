@@ -25,7 +25,7 @@ export default new Promise((resolve, reject) => {
         }
 
         resolve({
-            input: 'build/es2015/module.js',
+            input: 'build/es2018/module.js',
             output: {
                 file: 'build/es5/bundle.js',
                 format: 'umd',
@@ -34,7 +34,7 @@ export default new Promise((resolve, reject) => {
             plugins: [
                 replace({
                     delimiters: [ '`', '`' ],
-                    include: 'build/es2015/worklet/worklet.js',
+                    include: 'build/es2018/worklet/worklet.js',
                     values: {
                         [ workletString ]: `\`${ memoryFileSystem.readFileSync('/worklet.js', 'utf-8') }\``
                     }
