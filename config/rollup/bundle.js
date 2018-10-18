@@ -24,6 +24,11 @@ export default new Promise((resolve, reject) => {
             reject(new Error(stats.toString({ errorDetails: true, warnings: true })));
         }
 
+        const transpiledWorkletString = memoryFileSystem
+            .readFileSync('/worklet.js', 'utf-8')
+            .replace(/\\/g, '\\\\')
+            .replace(/\${/g, '\\${');
+
         resolve({
             input: 'build/es2018/module.js',
             output: {
@@ -36,7 +41,7 @@ export default new Promise((resolve, reject) => {
                     delimiters: [ '`', '`' ],
                     include: 'build/es2018/worklet/worklet.js',
                     values: {
-                        [ workletString ]: `\`${ memoryFileSystem.readFileSync('/worklet.js', 'utf-8') }\``
+                        [ workletString ]: `\`${ transpiledWorkletString }\``
                     }
                 }),
                 babel({
