@@ -1,6 +1,6 @@
-import { INativeAudioWorkletNode } from 'standardized-audio-context';
+import { TNativeAudioWorkletNode } from 'standardized-audio-context';
 
-export interface INativeRecorderAudioWorkletNode extends INativeAudioWorkletNode {
+export interface INativeRecorderAudioWorkletNode extends TNativeAudioWorkletNode {
 
     record (encoderPort: MessagePort): Promise<void>;
 

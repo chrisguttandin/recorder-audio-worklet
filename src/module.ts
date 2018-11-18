@@ -3,9 +3,9 @@ import { generateUniqueNumber } from 'fast-unique-numbers';
 import {
     IAudioWorkletNode,
     IAudioWorkletNodeConstructor,
-    INativeAudioWorkletNode,
     INativeAudioWorkletNodeConstructor,
     TContext,
+    TNativeAudioWorkletNode,
     TNativeContext
 } from 'standardized-audio-context';
 import { IWorkerErrorMessage, IWorkerResultMessage, isSupported } from 'worker-factory';
@@ -31,7 +31,7 @@ export function createRecorderAudioWorkletNode <T extends IAudioWorkletNodeConst
     context: T extends IAudioWorkletNodeConstructor ? TContext : TNativeContext,
     options: Partial<TAnyRecorderAudioWorkletNodeOptions<T>> = { }
 ): T extends IAudioWorkletNodeConstructor ? IRecorderAudioWorkletNode : INativeRecorderAudioWorkletNode {
-    type TAnyAudioWorkletNode = T extends IAudioWorkletNodeConstructor ? IAudioWorkletNode : INativeAudioWorkletNode;
+    type TAnyAudioWorkletNode = T extends IAudioWorkletNodeConstructor ? IAudioWorkletNode : TNativeAudioWorkletNode;
     type TAnyRecorderAudioWorkletNode = T extends IAudioWorkletNodeConstructor ?
         IRecorderAudioWorkletNode :
         INativeRecorderAudioWorkletNode;
