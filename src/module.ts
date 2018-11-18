@@ -87,7 +87,7 @@ export function createRecorderAudioWorkletNode <T extends IAudioWorkletNodeConst
 
     Object.defineProperties(audioWorkletNode, {
         port: {
-            get () {
+            get (): TAnyRecorderAudioWorkletNode['port'] {
                 throw new Error("The port of a RecorderAudioWorkletNode can't be accessed.");
             }
         },
