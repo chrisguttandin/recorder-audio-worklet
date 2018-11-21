@@ -71,6 +71,7 @@ export function createRecorderAudioWorkletNode <T extends IAudioWorkletNodeConst
     })(audioWorkletNode.port);
     const removeEventListener = ((port) => {
         port.addEventListener('message', listener);
+        port.start();
 
         return () => port.removeEventListener('message', listener);
     })(audioWorkletNode.port);
