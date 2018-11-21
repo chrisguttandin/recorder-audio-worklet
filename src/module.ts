@@ -99,7 +99,7 @@ export function createRecorderAudioWorkletNode <T extends IAudioWorkletNodeConst
                     return postMessage({
                         method: 'record',
                         params: { encoderPort }
-                    });
+                    }, [ encoderPort ]);
                 };
             }
         },
