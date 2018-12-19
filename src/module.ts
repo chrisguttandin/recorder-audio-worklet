@@ -2,10 +2,10 @@ import { IWorkerEvent } from 'broker-factory';
 import { generateUniqueNumber } from 'fast-unique-numbers';
 import {
     IAudioWorkletNode,
-    IAudioWorkletNodeConstructor,
-    INativeAudioWorkletNodeConstructor,
+    TAudioWorkletNodeConstructor,
     TContext,
     TNativeAudioWorkletNode,
+    TNativeAudioWorkletNodeConstructor,
     TNativeContext
 } from 'standardized-audio-context';
 import { IWorkerErrorMessage, IWorkerResultMessage, TTransferable, isSupported } from 'worker-factory';
@@ -26,13 +26,13 @@ export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url:
     URL.revokeObjectURL(url);
 };
 
-export function createRecorderAudioWorkletNode <T extends IAudioWorkletNodeConstructor | INativeAudioWorkletNodeConstructor> (
+export function createRecorderAudioWorkletNode <T extends TAudioWorkletNodeConstructor | TNativeAudioWorkletNodeConstructor> (
     audioWorkletNodeConstructor: T,
-    context: T extends IAudioWorkletNodeConstructor ? TContext : TNativeContext,
+    context: T extends TAudioWorkletNodeConstructor ? TContext : TNativeContext,
     options: Partial<TAnyRecorderAudioWorkletNodeOptions<T>> = { }
-): T extends IAudioWorkletNodeConstructor ? IRecorderAudioWorkletNode : INativeRecorderAudioWorkletNode {
-    type TAnyAudioWorkletNode = T extends IAudioWorkletNodeConstructor ? IAudioWorkletNode : TNativeAudioWorkletNode;
-    type TAnyRecorderAudioWorkletNode = T extends IAudioWorkletNodeConstructor ?
+): T extends TAudioWorkletNodeConstructor ? IRecorderAudioWorkletNode : INativeRecorderAudioWorkletNode {
+    type TAnyAudioWorkletNode = T extends TAudioWorkletNodeConstructor ? IAudioWorkletNode : TNativeAudioWorkletNode;
+    type TAnyRecorderAudioWorkletNode = T extends TAudioWorkletNodeConstructor ?
         IRecorderAudioWorkletNode :
         INativeRecorderAudioWorkletNode;
 
