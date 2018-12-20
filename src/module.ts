@@ -42,12 +42,12 @@ export function createRecorderAudioWorkletNode <T extends TAudioWorkletNodeConst
         numberOfInputs: 1,
         numberOfOutputs: 0
     });
-    const ongoingRequests: Map<number, { reject: Function, resolve: Function }> = new Map();
+    const ongoingRequests: Map<number, { reject: Function; resolve: Function }> = new Map();
     const listener = ({ data: message }: IWorkerEvent) => {
         const { id } = message;
 
         if (id !== null && ongoingRequests.has(id)) {
-            const { reject, resolve } = <{ reject: Function, resolve: Function }> ongoingRequests.get(id);
+            const { reject, resolve } = <{ reject: Function; resolve: Function }> ongoingRequests.get(id);
 
             ongoingRequests.delete(id);
 
@@ -59,7 +59,7 @@ export function createRecorderAudioWorkletNode <T extends TAudioWorkletNodeConst
         }
     };
     const postMessage = ((port) => {
-        return (message: { method: string, params?: object }, transferables: TTransferable[] = [ ]) => {
+        return (message: { method: string; params?: object }, transferables: TTransferable[] = [ ]) => {
             return new Promise<void>((resolve, reject) => {
                 const id = generateUniqueNumber(ongoingRequests);
 
