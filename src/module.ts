@@ -26,18 +26,16 @@ export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url:
     URL.revokeObjectURL(url);
 };
 
-export function createRecorderAudioWorkletNode <T extends TAudioWorkletNodeConstructor | TNativeAudioWorkletNodeConstructor> (
-    audioWorkletNodeConstructor: T,
-    context: T extends TAudioWorkletNodeConstructor ? TContext : TNativeContext,
+export function createRecorderAudioWorkletNode <T extends TContext | TNativeContext> (
+    audioWorkletNodeConstructor: T extends TContext ? TAudioWorkletNodeConstructor : TNativeAudioWorkletNodeConstructor,
+    context: T,
     options: Partial<TAnyRecorderAudioWorkletNodeOptions<T>> = { }
-): T extends TAudioWorkletNodeConstructor ? IRecorderAudioWorkletNode : INativeRecorderAudioWorkletNode {
-    type TAnyAudioWorkletNode = T extends TAudioWorkletNodeConstructor ? IAudioWorkletNode : TNativeAudioWorkletNode;
-    type TAnyRecorderAudioWorkletNode = T extends TAudioWorkletNodeConstructor ?
-        IRecorderAudioWorkletNode :
-        INativeRecorderAudioWorkletNode;
+): T extends TContext ? IRecorderAudioWorkletNode<T> : INativeRecorderAudioWorkletNode {
+    type TAnyAudioWorkletNode = T extends TContext ? IAudioWorkletNode<T> : TNativeAudioWorkletNode;
+    type TAnyRecorderAudioWorkletNode = T extends TContext ? IRecorderAudioWorkletNode<T> : INativeRecorderAudioWorkletNode;
 
     const audioWorkletNode: TAnyAudioWorkletNode = new (<any> audioWorkletNodeConstructor)(context, 'recorder-audio-worklet-processor', {
-        ...(<object> options),
+        ...options,
         channelCountMode: 'explicit',
         numberOfInputs: 1,
         numberOfOutputs: 0
