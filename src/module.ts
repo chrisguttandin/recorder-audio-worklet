@@ -8,7 +8,7 @@ import {
     TNativeAudioWorkletNodeConstructor,
     TNativeContext
 } from 'standardized-audio-context';
-import { IWorkerErrorMessage, IWorkerResultMessage, TTransferable, isSupported } from 'worker-factory';
+import { IWorkerErrorMessage, IWorkerResultMessage, isSupported } from 'worker-factory';
 import { INativeRecorderAudioWorkletNode, IRecorderAudioWorkletNode } from './interfaces';
 import { TAnyRecorderAudioWorkletNodeOptions, TState } from './types';
 import { worklet } from './worklet/worklet';
@@ -57,7 +57,7 @@ export function createRecorderAudioWorkletNode <T extends TContext | TNativeCont
         }
     };
     const postMessage = ((port) => {
-        return (message: { method: string; params?: object }, transferables: TTransferable[] = [ ]) => {
+        return (message: { method: string; params?: object }, transferables: Transferable[] = [ ]) => {
             return new Promise<void>((resolve, reject) => {
                 const id = generateUniqueNumber(ongoingRequests);
 
