@@ -11,7 +11,7 @@
   "dependencies": {
     "@babel/runtime": "^7.4.5",
     "broker-factory": "^2.0.22",
-    "fast-unique-numbers": "^4.0.0",
+    "fast-unique-numbers": "^4.0.2",
     "recorder-audio-worklet-processor": "^3.0.13",
     "standardized-audio-context": "^20.1.5",
     "tslib": "^1.9.3",
