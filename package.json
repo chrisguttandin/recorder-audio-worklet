@@ -13,7 +13,7 @@
     "broker-factory": "^2.0.24",
     "fast-unique-numbers": "^4.0.5",
     "recorder-audio-worklet-processor": "^3.0.16",
-    "standardized-audio-context": "^20.1.10",
+    "standardized-audio-context": "^20.1.11",
     "tslib": "^1.10.0",
     "worker-factory": "^5.0.4"
   },
