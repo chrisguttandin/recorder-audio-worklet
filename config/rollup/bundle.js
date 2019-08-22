@@ -6,13 +6,13 @@ import webpack from 'webpack';
 import webpackConfig from '../webpack/config';
 
 const workletFile = readFileSync('src/worklet/worklet.ts', 'utf-8');
-const result = /export\sconst\sworklet\s=\s`(.*)`;/g.exec(workletFile);
+const result = /export\sconst\sworklet\s=\s`(?<workletString>.*)`;/g.exec(workletFile);
 
 if (result === null) {
     throw new Error('The worklet file could not be parsed.');
 }
 
-const workletString = result[1];
+const workletString = result.groups.workletString;
 const memoryFileSystem = new MemoryFileSystem();
 
 export default new Promise((resolve, reject) => { // eslint-disable-line import/no-default-export
