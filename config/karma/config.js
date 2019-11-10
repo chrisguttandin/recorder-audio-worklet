@@ -57,12 +57,12 @@ module.exports = (config) => {
                 ChromeSauceLabs: {
                     base: 'SauceLabs',
                     browserName: 'chrome',
-                    platform: 'OS X 10.11'
+                    platform: 'macOS 10.14'
                 },
                 FirefoxSauceLabs: {
                     base: 'SauceLabs',
                     browserName: 'firefox',
-                    platform: 'OS X 10.11'
+                    platform: 'macOS 10.14'
                 }
             },
 
