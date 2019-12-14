@@ -13,8 +13,12 @@ import { INativeRecorderAudioWorkletNode, IRecorderAudioWorkletNode } from './in
 import { TAnyRecorderAudioWorkletNodeOptions, TState } from './types';
 import { worklet } from './worklet/worklet';
 
-export * from './interfaces';
-export * from './types';
+/*
+ * @todo Explicitly referencing the barrel file seems to be necessary when enabling the
+ * isolatedModules compiler option.
+ */
+export * from './interfaces/index';
+export * from './types/index';
 
 const blob = new Blob([ worklet ], { type: 'application/javascript; charset=utf-8' });
 
