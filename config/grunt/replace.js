@@ -13,7 +13,7 @@ module.exports = {
                         .replace(/\\/g, '\\\\')
                         .replace(/\${/g, '\\${');
 
-                    return `// tslint:disable-next-line:max-line-length\nexport const worklet = \`${ workletString }\`;\n`;
+                    return `// This is the minified and stringified code of the recorder-audio-worklet-processor package.\nexport const worklet = \`${ workletString }\`; // tslint:disable-line:max-line-length\n`;
                 }
             } ]
         }
