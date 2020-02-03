@@ -4,7 +4,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
     default: {
         entry: {
-            worklet: './node_modules/recorder-audio-worklet-processor/build/es2018/module.js'
+            worklet: './node_modules/recorder-audio-worklet-processor/build/es2019/module.js'
         },
         mode: 'production',
         module: {
