@@ -22,7 +22,7 @@ export * from './types/index';
 
 const blob = new Blob([ worklet ], { type: 'application/javascript; charset=utf-8' });
 
-export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url: string) => Promise<void>) => { // tslint:disable-line:invalid-void max-line-length
+export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url: string) => Promise<void>) => {
     const url = URL.createObjectURL(blob);
 
     await addAudioWorkletModule(url);
@@ -61,7 +61,7 @@ export function createRecorderAudioWorkletNode <T extends TContext | TNativeCont
         }
     };
     const postMessage = ((port) => {
-        return (message: { method: string; params?: object }, transferables: Transferable[] = [ ]): Promise<void> => { // tslint:disable-line:invalid-void max-line-length
+        return (message: { method: string; params?: object }, transferables: Transferable[] = [ ]): Promise<void> => {
             return new Promise((resolve, reject) => {
                 const id = generateUniqueNumber(ongoingRequests);
 
