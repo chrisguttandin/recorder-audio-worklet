@@ -17,7 +17,7 @@
     "tslib": "^1.11.1",
     "worker-factory": "^6.0.4"
   },
-  "description": "This module provides an loader for the RecorderAudioWorkletProcessor and the corresponding RecorderAudioWorkletNode.",
+  "description": "This module provides a loader for the RecorderAudioWorkletProcessor and the corresponding RecorderAudioWorkletNode.",
   "devDependencies": {
     "@babel/core": "^7.8.7",
     "@babel/plugin-external-helpers": "^7.8.3",
