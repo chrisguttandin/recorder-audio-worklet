@@ -23,7 +23,7 @@ export default new Promise((resolve, reject) => { // eslint-disable-line import/
         if (stats.hasErrors() || stats.hasWarnings()) {
             reject(new Error(stats.toString({ errorDetails: true, warnings: true })));
         } else {
-            const transpiledWorkletString = fs
+            const transpiledWorkletString = fs // eslint-disable-line node/no-sync
                 .readFileSync('/worklet.js', 'utf-8')
                 .replace(/\\/g, '\\\\')
                 .replace(/\${/g, '\\${');
