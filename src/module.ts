@@ -20,7 +20,7 @@ import { worklet } from './worklet/worklet';
 export * from './interfaces/index';
 export * from './types/index';
 
-const blob = new Blob([ worklet ], { type: 'application/javascript; charset=utf-8' });
+const blob = new Blob([worklet], { type: 'application/javascript; charset=utf-8' });
 
 export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url: string) => Promise<void>) => {
     const url = URL.createObjectURL(blob);
@@ -30,15 +30,15 @@ export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url:
     URL.revokeObjectURL(url);
 };
 
-export function createRecorderAudioWorkletNode <T extends TContext | TNativeContext> (
+export function createRecorderAudioWorkletNode<T extends TContext | TNativeContext>(
     audioWorkletNodeConstructor: T extends TContext ? TAudioWorkletNodeConstructor : TNativeAudioWorkletNodeConstructor,
     context: T,
-    options: Partial<TAnyRecorderAudioWorkletNodeOptions<T>> = { }
+    options: Partial<TAnyRecorderAudioWorkletNodeOptions<T>> = {}
 ): T extends TContext ? IRecorderAudioWorkletNode<T> : INativeRecorderAudioWorkletNode {
     type TAnyAudioWorkletNode = T extends TContext ? IAudioWorkletNode<T> : TNativeAudioWorkletNode;
     type TAnyRecorderAudioWorkletNode = T extends TContext ? IRecorderAudioWorkletNode<T> : INativeRecorderAudioWorkletNode;
 
-    const audioWorkletNode: TAnyAudioWorkletNode = new (<any> audioWorkletNodeConstructor)(context, 'recorder-audio-worklet-processor', {
+    const audioWorkletNode: TAnyAudioWorkletNode = new (<any>audioWorkletNodeConstructor)(context, 'recorder-audio-worklet-processor', {
         ...options,
         channelCountMode: 'explicit',
         numberOfInputs: 1,
@@ -49,19 +49,19 @@ export function createRecorderAudioWorkletNode <T extends TContext | TNativeCont
         const { id } = message;
 
         if (id !== null && ongoingRequests.has(id)) {
-            const { reject, resolve } = <{ reject: Function; resolve: Function }> ongoingRequests.get(id);
+            const { reject, resolve } = <{ reject: Function; resolve: Function }>ongoingRequests.get(id);
 
             ongoingRequests.delete(id);
 
-            if ((<IWorkerErrorMessage> message).error === undefined) {
-                resolve((<IWorkerResultMessage> message).result);
+            if ((<IWorkerErrorMessage>message).error === undefined) {
+                resolve((<IWorkerResultMessage>message).result);
             } else {
-                reject(new Error((<IWorkerErrorMessage> message).error.message));
+                reject(new Error((<IWorkerErrorMessage>message).error.message));
             }
         }
     };
     const postMessage = ((port) => {
-        return (message: { method: string; params?: object }, transferables: Transferable[] = [ ]): Promise<void> => {
+        return (message: { method: string; params?: object }, transferables: Transferable[] = []): Promise<void> => {
             return new Promise((resolve, reject) => {
                 const id = generateUniqueNumber(ongoingRequests);
 
@@ -82,7 +82,7 @@ export function createRecorderAudioWorkletNode <T extends TContext | TNativeCont
 
     const changeState = (expectedState: TState, nextState: TState) => {
         if (state !== expectedState) {
-            throw new Error(`Expected the state to be "${ expectedState }" but it was "${ state }".`);
+            throw new Error(`Expected the state to be "${expectedState}" but it was "${state}".`);
         }
 
         state = nextState;
@@ -90,24 +90,27 @@ export function createRecorderAudioWorkletNode <T extends TContext | TNativeCont
 
     Object.defineProperties(audioWorkletNode, {
         port: {
-            get (): TAnyRecorderAudioWorkletNode['port'] {
+            get(): TAnyRecorderAudioWorkletNode['port'] {
                 throw new Error("The port of a RecorderAudioWorkletNode can't be accessed.");
             }
         },
         record: {
-            get (): TAnyRecorderAudioWorkletNode['record'] {
+            get(): TAnyRecorderAudioWorkletNode['record'] {
                 return async (encoderPort: MessagePort) => {
                     changeState('inactive', 'recording');
 
-                    return postMessage({
-                        method: 'record',
-                        params: { encoderPort }
-                    }, [ encoderPort ]);
+                    return postMessage(
+                        {
+                            method: 'record',
+                            params: { encoderPort }
+                        },
+                        [encoderPort]
+                    );
                 };
             }
         },
         stop: {
-            get (): TAnyRecorderAudioWorkletNode['stop'] {
+            get(): TAnyRecorderAudioWorkletNode['stop'] {
                 return async () => {
                     changeState('recording', 'stopped');
 
@@ -121,7 +124,7 @@ export function createRecorderAudioWorkletNode <T extends TContext | TNativeCont
         }
     });
 
-    return <TAnyRecorderAudioWorkletNode> audioWorkletNode;
+    return <TAnyRecorderAudioWorkletNode>audioWorkletNode;
 }
 
 export { isSupported };

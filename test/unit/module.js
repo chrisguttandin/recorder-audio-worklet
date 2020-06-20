@@ -3,9 +3,7 @@ import { addRecorderAudioWorkletModule, createRecorderAudioWorkletNode, isSuppor
 import { spy } from 'sinon';
 
 describe('module', () => {
-
     describe('addRecorderAudioWorkletModule()', () => {
-
         it('should call the given function with an URL', () => {
             const addAudioWorkletModule = spy();
 
@@ -19,11 +17,9 @@ describe('module', () => {
             expect(args[0]).to.be.a('string');
             expect(args[0]).to.match(/^blob:/);
         });
-
     });
 
     describe('createRecorderAudioWorkletNode()', () => {
-
         const testCases = {
             'with a native AudioContext': {
                 audioWorkletNodeConstructor: window.AudioWorkletNode,
@@ -41,10 +37,10 @@ describe('module', () => {
             delete testCases['with a native AudioContext'];
         }
 
-        for (const [ description, { audioWorkletNodeConstructor, createAddAudioWorkletModule, createContext } ] of Object.entries(testCases)) {
-
-            describe(`with the ${ description }`, () => {
-
+        for (const [description, { audioWorkletNodeConstructor, createAddAudioWorkletModule, createContext }] of Object.entries(
+            testCases
+        )) {
+            describe(`with the ${description}`, () => {
                 let context;
                 let recorderAudioWorkletNode;
 
@@ -90,39 +86,27 @@ describe('module', () => {
                 });
 
                 describe('port', () => {
-
                     it('should throw an error', () => {
                         expect(() => {
                             recorderAudioWorkletNode.port;
                         }).to.throw(Error, "The port of a RecorderAudioWorkletNode can't be accessed.");
                     });
-
                 });
 
                 describe('record()', () => {
-
                     // @todo
-
                 });
 
                 describe('stop()', () => {
-
                     // @todo
-
                 });
-
             });
-
         }
-
     });
 
     describe('isSupported()', () => {
-
         it('should export a function', () => {
             expect(isSupported).to.be.a('function');
         });
-
     });
-
 });
