@@ -15,7 +15,7 @@
         "recorder-audio-worklet-processor": "^4.0.14",
         "standardized-audio-context": "^24.1.21",
         "tslib": "^2.0.0",
-        "worker-factory": "^6.0.14"
+        "worker-factory": "^6.0.15"
     },
     "description": "This module provides a loader for the RecorderAudioWorkletProcessor and the corresponding RecorderAudioWorkletNode.",
     "devDependencies": {
