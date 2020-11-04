@@ -6,7 +6,7 @@ import replace from '@rollup/plugin-replace';
 import webpack from 'webpack';
 import webpackConfig from '../webpack/config';
 
-const workletFile = readFileSync('src/worklet/worklet.ts', 'utf-8');
+const workletFile = readFileSync('src/worklet/worklet.ts', 'utf8');
 const result = /export\sconst\sworklet\s=\s`(?<workletString>.*)`;/g.exec(workletFile);
 
 if (result === null) {
@@ -25,7 +25,7 @@ export default new Promise((resolve, reject) => {
             reject(new Error(stats.toString({ errorDetails: true, warnings: true })));
         } else {
             const transpiledWorkletString = fs // eslint-disable-line node/no-sync
-                .readFileSync('/worklet.js', 'utf-8')
+                .readFileSync('/worklet.js', 'utf8')
                 .replace(/\\/g, '\\\\')
                 .replace(/\${/g, '\\${');
 
