@@ -25,9 +25,11 @@ const blob = new Blob([worklet], { type: 'application/javascript; charset=utf-8'
 export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url: string) => Promise<void>) => {
     const url = URL.createObjectURL(blob);
 
-    await addAudioWorkletModule(url);
-
-    URL.revokeObjectURL(url);
+    try {
+        await addAudioWorkletModule(url);
+    } finally {
+        URL.revokeObjectURL(url);
+    }
 };
 
 export function createRecorderAudioWorkletNode<T extends TContext | TNativeContext>(
