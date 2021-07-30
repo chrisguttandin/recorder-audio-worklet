@@ -1,6 +1,7 @@
 import { generateUniqueNumber } from 'fast-unique-numbers';
 import { on } from 'subscribable-things';
 import { isSupported } from 'worker-factory';
+import { createAddRecorderAudioWorkletModule } from './factories/add-recorder-audio-worklet-module';
 import { createListener } from './factories/listener';
 import { createPostMessageFactory } from './factories/post-message-factory';
 import { createRecorderAudioWorkletNodeFactory } from './factories/recorder-audio-worklet-node-factory';
@@ -14,17 +15,7 @@ import { worklet } from './worklet/worklet';
 export * from './interfaces/index';
 export * from './types/index';
 
-const blob = new Blob([worklet], { type: 'application/javascript; charset=utf-8' });
-
-export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url: string) => Promise<void>) => {
-    const url = URL.createObjectURL(blob);
-
-    try {
-        await addAudioWorkletModule(url);
-    } finally {
-        URL.revokeObjectURL(url);
-    }
-};
+export const addRecorderAudioWorkletModule = createAddRecorderAudioWorkletModule(Blob, URL, worklet);
 
 export const createRecorderAudioWorkletNode = createRecorderAudioWorkletNodeFactory(
     createListener,
