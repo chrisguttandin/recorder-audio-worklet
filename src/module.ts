@@ -8,6 +8,7 @@ import {
     TNativeAudioWorkletNodeConstructor,
     TNativeContext
 } from 'standardized-audio-context';
+import { on } from 'subscribable-things';
 import { IWorkerErrorMessage, IWorkerResultMessage, isSupported } from 'worker-factory';
 import { validateState } from './functions/validate-state';
 import { INativeRecorderAudioWorkletNode, IRecorderAudioWorkletNode } from './interfaces';
@@ -74,12 +75,9 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
             });
         };
     })(audioWorkletNode.port);
-    const removeEventListener = ((port) => {
-        port.addEventListener('message', listener);
-        port.start();
+    const removeEventListener = on(audioWorkletNode.port, 'message')(listener);
 
-        return () => port.removeEventListener('message', listener);
-    })(audioWorkletNode.port);
+    audioWorkletNode.port.start();
 
     let state: TState = 'inactive';
 
