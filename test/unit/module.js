@@ -81,7 +81,9 @@ describe('module', () => {
                 });
 
                 it('should return an instance of the RecorderAudioWorkletNode interface', () => {
+                    expect(recorderAudioWorkletNode.pause).to.be.a('function');
                     expect(recorderAudioWorkletNode.record).to.be.a('function');
+                    expect(recorderAudioWorkletNode.resume).to.be.a('function');
                     expect(recorderAudioWorkletNode.stop).to.be.a('function');
                 });
 
@@ -93,7 +95,15 @@ describe('module', () => {
                     });
                 });
 
+                describe('pause()', () => {
+                    // @todo
+                });
+
                 describe('record()', () => {
+                    // @todo
+                });
+
+                describe('resume()', () => {
                     // @todo
                 });
 

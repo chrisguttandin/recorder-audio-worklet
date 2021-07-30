@@ -82,15 +82,30 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
 
     let state: TState = 'inactive';
 
-    const changeState = (expectedState: TState, nextState: TState) => {
-        if (state !== expectedState) {
-            throw new Error(`Expected the state to be "${expectedState}" but it was "${state}".`);
+    const changeState = (expectedStates: TState[], nextState: TState) => {
+        if (!expectedStates.includes(state)) {
+            throw new Error(
+                `Expected the state to be ${expectedStates
+                    .map((expectedState) => `"${expectedState}"`)
+                    .join(' or ')} but it was "${state}".`
+            );
         }
 
         state = nextState;
     };
 
     Object.defineProperties(audioWorkletNode, {
+        pause: {
+            get(): TAnyRecorderAudioWorkletNode['pause'] {
+                return () => {
+                    changeState(['recording'], 'paused');
+
+                    return postMessage({
+                        method: 'pause'
+                    });
+                };
+            }
+        },
         port: {
             get(): TAnyRecorderAudioWorkletNode['port'] {
                 throw new Error("The port of a RecorderAudioWorkletNode can't be accessed.");
@@ -98,8 +113,8 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
         },
         record: {
             get(): TAnyRecorderAudioWorkletNode['record'] {
-                return async (encoderPort: MessagePort) => {
-                    changeState('inactive', 'recording');
+                return (encoderPort: MessagePort) => {
+                    changeState(['inactive'], 'recording');
 
                     return postMessage(
                         {
@@ -111,10 +126,21 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
                 };
             }
         },
+        resume: {
+            get(): TAnyRecorderAudioWorkletNode['resume'] {
+                return () => {
+                    changeState(['paused'], 'recording');
+
+                    return postMessage({
+                        method: 'resume'
+                    });
+                };
+            }
+        },
         stop: {
             get(): TAnyRecorderAudioWorkletNode['stop'] {
                 return async () => {
-                    changeState('recording', 'stopped');
+                    changeState(['paused', 'recording'], 'stopped');
 
                     try {
                         await postMessage({ method: 'stop' });

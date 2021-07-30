@@ -1,1 +1,1 @@
-export type TState = 'inactive' | 'recording' | 'stopped';
+export type TState = 'inactive' | 'paused' | 'recording' | 'stopped';
