@@ -10,6 +10,7 @@ import {
 import { on } from 'subscribable-things';
 import { isSupported } from 'worker-factory';
 import { createListener } from './factories/listener';
+import { createPostMessageFactory } from './factories/post-message-factory';
 import { validateState } from './functions/validate-state';
 import { INativeRecorderAudioWorkletNode, IRecorderAudioWorkletNode } from './interfaces';
 import { TAnyRecorderAudioWorkletNodeOptions, TState } from './types';
@@ -22,6 +23,7 @@ import { worklet } from './worklet/worklet';
 export * from './interfaces/index';
 export * from './types/index';
 
+const createPostMessage = createPostMessageFactory(generateUniqueNumber);
 const blob = new Blob([worklet], { type: 'application/javascript; charset=utf-8' });
 
 export const addRecorderAudioWorkletModule = async (addAudioWorkletModule: (url: string) => Promise<void>) => {
@@ -49,17 +51,7 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
         numberOfOutputs: 0
     });
     const ongoingRequests: Map<number, { reject: Function; resolve: Function }> = new Map();
-    const postMessage = ((port) => {
-        return (message: { method: string; params?: object }, transferables: Transferable[] = []): Promise<void> => {
-            return new Promise((resolve, reject) => {
-                const id = generateUniqueNumber(ongoingRequests);
-
-                ongoingRequests.set(id, { reject, resolve });
-
-                port.postMessage({ id, ...message }, transferables);
-            });
-        };
-    })(audioWorkletNode.port);
+    const postMessage = createPostMessage(ongoingRequests, audioWorkletNode.port);
     const removeEventListener = on(audioWorkletNode.port, 'message')(createListener(ongoingRequests));
 
     audioWorkletNode.port.start();
