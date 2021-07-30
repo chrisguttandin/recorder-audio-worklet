@@ -1,4 +1,3 @@
-import { IWorkerEvent } from 'broker-factory';
 import { generateUniqueNumber } from 'fast-unique-numbers';
 import {
     IAudioWorkletNode,
@@ -9,7 +8,8 @@ import {
     TNativeContext
 } from 'standardized-audio-context';
 import { on } from 'subscribable-things';
-import { IWorkerErrorMessage, IWorkerResultMessage, isSupported } from 'worker-factory';
+import { isSupported } from 'worker-factory';
+import { createListener } from './factories/listener';
 import { validateState } from './functions/validate-state';
 import { INativeRecorderAudioWorkletNode, IRecorderAudioWorkletNode } from './interfaces';
 import { TAnyRecorderAudioWorkletNodeOptions, TState } from './types';
@@ -49,21 +49,6 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
         numberOfOutputs: 0
     });
     const ongoingRequests: Map<number, { reject: Function; resolve: Function }> = new Map();
-    const listener = ({ data: message }: IWorkerEvent) => {
-        const { id } = message;
-
-        if (id !== null && ongoingRequests.has(id)) {
-            const { reject, resolve } = <{ reject: Function; resolve: Function }>ongoingRequests.get(id);
-
-            ongoingRequests.delete(id);
-
-            if ((<IWorkerErrorMessage>message).error === undefined) {
-                resolve((<IWorkerResultMessage>message).result);
-            } else {
-                reject(new Error((<IWorkerErrorMessage>message).error.message));
-            }
-        }
-    };
     const postMessage = ((port) => {
         return (message: { method: string; params?: object }, transferables: Transferable[] = []): Promise<void> => {
             return new Promise((resolve, reject) => {
@@ -75,7 +60,7 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
             });
         };
     })(audioWorkletNode.port);
-    const removeEventListener = on(audioWorkletNode.port, 'message')(listener);
+    const removeEventListener = on(audioWorkletNode.port, 'message')(createListener(ongoingRequests));
 
     audioWorkletNode.port.start();
 
