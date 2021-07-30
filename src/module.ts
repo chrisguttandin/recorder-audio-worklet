@@ -9,6 +9,7 @@ import {
     TNativeContext
 } from 'standardized-audio-context';
 import { IWorkerErrorMessage, IWorkerResultMessage, isSupported } from 'worker-factory';
+import { validateState } from './functions/validate-state';
 import { INativeRecorderAudioWorkletNode, IRecorderAudioWorkletNode } from './interfaces';
 import { TAnyRecorderAudioWorkletNodeOptions, TState } from './types';
 import { worklet } from './worklet/worklet';
@@ -82,23 +83,13 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
 
     let state: TState = 'inactive';
 
-    const changeState = (expectedStates: TState[], nextState: TState) => {
-        if (!expectedStates.includes(state)) {
-            throw new Error(
-                `Expected the state to be ${expectedStates
-                    .map((expectedState) => `"${expectedState}"`)
-                    .join(' or ')} but it was "${state}".`
-            );
-        }
-
-        state = nextState;
-    };
-
     Object.defineProperties(audioWorkletNode, {
         pause: {
             get(): TAnyRecorderAudioWorkletNode['pause'] {
                 return () => {
-                    changeState(['recording'], 'paused');
+                    validateState(['recording'], state);
+
+                    state = 'paused';
 
                     return postMessage({
                         method: 'pause'
@@ -114,7 +105,9 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
         record: {
             get(): TAnyRecorderAudioWorkletNode['record'] {
                 return (encoderPort: MessagePort) => {
-                    changeState(['inactive'], 'recording');
+                    validateState(['inactive'], state);
+
+                    state = 'recording';
 
                     return postMessage(
                         {
@@ -129,7 +122,9 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
         resume: {
             get(): TAnyRecorderAudioWorkletNode['resume'] {
                 return () => {
-                    changeState(['paused'], 'recording');
+                    validateState(['paused'], state);
+
+                    state = 'recording';
 
                     return postMessage({
                         method: 'resume'
@@ -140,7 +135,9 @@ export function createRecorderAudioWorkletNode<T extends TContext | TNativeConte
         stop: {
             get(): TAnyRecorderAudioWorkletNode['stop'] {
                 return async () => {
-                    changeState(['paused', 'recording'], 'stopped');
+                    validateState(['paused', 'recording'], state);
+
+                    state = 'stopped';
 
                     try {
                         await postMessage({ method: 'stop' });
