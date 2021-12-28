@@ -3,7 +3,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 // eslint-disable-next-line import/no-default-export
 export default {
     entry: {
-        worklet: './config/webpack/worklet.js'
+        worklet: './src/worklet.js'
     },
     mode: 'production',
     module: {
