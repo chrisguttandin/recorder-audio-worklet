@@ -4,7 +4,7 @@ import { fs } from 'memfs';
 import { join } from 'path';
 import replace from '@rollup/plugin-replace';
 import webpack from 'webpack';
-import webpackConfig from '../webpack/config';
+import webpackConfig from '../webpack/worklet-es5';
 
 const workletFile = readFileSync('src/worklet/worklet.ts', 'utf8');
 const result = /export\sconst\sworklet\s=\s`(?<workletString>.*)`;/g.exec(workletFile);
@@ -21,7 +21,7 @@ export default new Promise((resolve, reject) => {
 
     compiler.inputFileSystem = {
         readFile(path, ...args) {
-            if (path === join(__dirname, '../../src/worker.js')) {
+            if (path === join(__dirname, '../../src/worklet.js')) {
                 args.pop()(null, "import 'recorder-audio-worklet-processor';");
 
                 return;
@@ -30,14 +30,14 @@ export default new Promise((resolve, reject) => {
             return readFile(path, ...args);
         },
         readlink(path, callback) {
-            if (path === join(__dirname, '../../src/worker.js')) {
+            if (path === join(__dirname, '../../src/worklet.js')) {
                 return readlink(__filename, callback);
             }
 
             return readlink(path, callback);
         },
         stat(path, ...args) {
-            if (path === join(__dirname, '../../src/worker.js')) {
+            if (path === join(__dirname, '../../src/worklet.js')) {
                 args.pop()(null, {
                     isFile() {
                         return true;
