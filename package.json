@@ -14,7 +14,7 @@
         "fast-unique-numbers": "^8.0.7",
         "recorder-audio-worklet-processor": "^5.0.8",
         "standardized-audio-context": "^25.3.55",
-        "subscribable-things": "^2.1.22",
+        "subscribable-things": "^2.1.23",
         "tslib": "^2.6.0",
         "worker-factory": "^7.0.8"
     },
