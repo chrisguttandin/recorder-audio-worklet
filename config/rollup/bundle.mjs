@@ -62,6 +62,7 @@ export default new Promise((resolve, reject) => {
             const transpiledWorkletString = fs // eslint-disable-line node/no-sync
                 .readFileSync('/worklet.js', 'utf8')
                 .replace(/\\/g, '\\\\')
+                .replace(/`/g, '\\`')
                 .replace(/\${/g, '\\${');
 
             resolve({
