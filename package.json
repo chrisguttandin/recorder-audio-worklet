@@ -12,6 +12,7 @@
         "@babel/runtime": "^7.22.6",
         "broker-factory": "^3.0.84",
         "fast-unique-numbers": "^8.0.7",
+        "linked": "^0.2.0",
         "recorder-audio-worklet-processor": "^5.0.8",
         "standardized-audio-context": "^25.3.55",
         "subscribable-things": "^2.1.23",
@@ -20,7 +21,7 @@
     },
     "description": "This module provides a loader for the RecorderAudioWorkletProcessor and the corresponding RecorderAudioWorkletNode.",
     "devDependencies": {
-        "@babel/core": "^7.22.17",
+        "@babel/core": "^7.22.19",
         "@babel/plugin-external-helpers": "^7.22.5",
         "@babel/plugin-transform-runtime": "^7.22.15",
         "@babel/preset-env": "^7.22.15",
