@@ -86,5 +86,5 @@
         "test:unit": "if [ \"$TYPE\" = \"\" -o \"$TYPE\" = \"unit\" ]; then karma start config/karma/config-unit.js --single-run; fi"
     },
     "types": "build/es2019/module.d.ts",
-    "version": "6.0.46"
+    "version": "6.0.47"
 }
