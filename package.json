@@ -9,7 +9,7 @@
         }
     },
     "dependencies": {
-        "@babel/runtime": "^7.27.6",
+        "@babel/runtime": "^7.28.3",
         "broker-factory": "^3.1.8",
         "fast-unique-numbers": "^9.0.22",
         "recorder-audio-worklet-processor": "^5.0.35",
