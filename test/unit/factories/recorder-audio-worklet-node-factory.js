@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
+import { beforeEach, describe, expect, it } from 'vitest';
 import { spy, stub } from 'sinon';
 import { createRecorderAudioWorkletNodeFactory } from '../../../src/factories/recorder-audio-worklet-node-factory';
 
@@ -108,18 +109,16 @@ describe('createRecorderAudioWorkletNode()', () => {
 
 describe('RecorderAudioWorkletNode', () => {
     let postMessage;
-    let promise;
     let recorderAudioWorkletNode;
     let unsubscribe;
     let validateState;
 
     beforeEach(() => {
         postMessage = stub();
-        promise = Promise.resolve();
         unsubscribe = spy();
         validateState = stub();
 
-        postMessage.returns(promise);
+        postMessage.resolves();
 
         recorderAudioWorkletNode = createRecorderAudioWorkletNodeFactory(
             () => {},
@@ -181,12 +180,16 @@ describe('RecorderAudioWorkletNode', () => {
                 validateState.throws(error);
             });
 
-            it('should rethrow the errror', (done) => {
+            it('should rethrow the errror', () => {
+                const { promise, resolve } = Promise.withResolvers();
+
                 recorderAudioWorkletNode.pause().catch((err) => {
                     expect(err).to.equal(error);
 
-                    done();
+                    resolve();
                 });
+
+                return promise;
             });
 
             it('should not call postMessage()', () => {
@@ -251,12 +254,16 @@ describe('RecorderAudioWorkletNode', () => {
                 validateState.throws(error);
             });
 
-            it('should rethrow the errror', (done) => {
+            it('should rethrow the errror', () => {
+                const { promise, resolve } = Promise.withResolvers();
+
                 recorderAudioWorkletNode.record(encoderPort).catch((err) => {
                     expect(err).to.equal(error);
 
-                    done();
+                    resolve();
                 });
+
+                return promise;
             });
 
             it('should not call postMessage()', () => {
@@ -309,12 +316,16 @@ describe('RecorderAudioWorkletNode', () => {
                 validateState.throws(error);
             });
 
-            it('should rethrow the errror', (done) => {
+            it('should rethrow the errror', () => {
+                const { promise, resolve } = Promise.withResolvers();
+
                 recorderAudioWorkletNode.resume().catch((err) => {
                     expect(err).to.equal(error);
 
-                    done();
+                    resolve();
                 });
+
+                return promise;
             });
 
             it('should not call postMessage()', () => {
@@ -373,12 +384,16 @@ describe('RecorderAudioWorkletNode', () => {
                 validateState.throws(error);
             });
 
-            it('should rethrow the errror', (done) => {
+            it('should rethrow the errror', () => {
+                const { promise, resolve } = Promise.withResolvers();
+
                 recorderAudioWorkletNode.stop().catch((err) => {
                     expect(err).to.equal(error);
 
-                    done();
+                    resolve();
                 });
+
+                return promise;
             });
 
             it('should not call postMessage()', () => {

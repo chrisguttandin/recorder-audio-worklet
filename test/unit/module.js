@@ -1,5 +1,6 @@
 import { AudioContext, AudioWorkletNode } from 'standardized-audio-context';
 import { addRecorderAudioWorkletModule, createRecorderAudioWorkletNode, isSupported } from '../../src/module';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { spy } from 'sinon';
 
 describe('module', () => {
@@ -93,22 +94,6 @@ describe('module', () => {
                             recorderAudioWorkletNode.port;
                         }).to.throw(Error, "The port of a RecorderAudioWorkletNode can't be accessed.");
                     });
-                });
-
-                describe('pause()', () => {
-                    // @todo
-                });
-
-                describe('record()', () => {
-                    // @todo
-                });
-
-                describe('resume()', () => {
-                    // @todo
-                });
-
-                describe('stop()', () => {
-                    // @todo
                 });
             });
         }

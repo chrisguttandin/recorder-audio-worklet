@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createListener } from '../../../src/factories/listener';
 import { spy } from 'sinon';
 

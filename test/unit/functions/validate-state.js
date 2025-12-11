@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { validateState } from '../../../src/functions/validate-state';
 
 describe('validateState()', () => {

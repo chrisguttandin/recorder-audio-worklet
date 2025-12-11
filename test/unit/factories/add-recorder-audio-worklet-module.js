@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { spy, stub } from 'sinon';
 import { createAddRecorderAudioWorkletModule } from '../../../src/factories/add-recorder-audio-worklet-module';
 
