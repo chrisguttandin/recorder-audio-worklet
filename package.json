@@ -36,7 +36,6 @@
         "eslint": "^8.57.0",
         "eslint-config-holy-grail": "^61.0.3",
         "husky": "^9.1.7",
-        "karma": "^6.4.4",
         "lint-staged": "^16.2.7",
         "memfs": "^4.51.1",
         "mocha": "^11.7.5",
