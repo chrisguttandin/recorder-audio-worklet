@@ -9,7 +9,7 @@ import type {
 import type { on as onFunction } from 'subscribable-things';
 import type { validateState as validateStateFunction } from '../functions/validate-state';
 import { INativeRecorderAudioWorkletNode, IRecorderAudioWorkletNode } from '../interfaces';
-import { TAnyRecorderAudioWorkletNodeOptions, TState } from '../types';
+import { TAnyAudioWorkletNodeOptions, TAnyRecorderAudioWorkletNodeOptions, TFixedOptions, TState } from '../types';
 import type { createListener as createListenerFunction } from './listener';
 import type { createPostMessageFactory } from './post-message-factory';
 
@@ -27,11 +27,14 @@ export const createRecorderAudioWorkletNodeFactory = (
         type TAnyAudioWorkletNode = T extends TContext ? IAudioWorkletNode<T> : TNativeAudioWorkletNode;
         type TAnyRecorderAudioWorkletNode = T extends TContext ? IRecorderAudioWorkletNode<T> : INativeRecorderAudioWorkletNode;
 
-        const audioWorkletNode: TAnyAudioWorkletNode = new (<any>audioWorkletNodeConstructor)(context, 'recorder-audio-worklet-processor', {
-            ...options,
+        const fixedOptions: Required<Pick<TAnyAudioWorkletNodeOptions<T>, TFixedOptions>> = {
             channelCountMode: 'explicit',
             numberOfInputs: 1,
             numberOfOutputs: 0
+        };
+        const audioWorkletNode: TAnyAudioWorkletNode = new (<any>audioWorkletNodeConstructor)(context, 'recorder-audio-worklet-processor', {
+            ...options,
+            ...fixedOptions
         });
         const ongoingRequests: Map<number, { reject: Function; resolve: Function }> = new Map();
         const postMessage = createPostMessage(ongoingRequests, audioWorkletNode.port);
