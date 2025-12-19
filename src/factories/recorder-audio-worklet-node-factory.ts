@@ -22,7 +22,7 @@ export const createRecorderAudioWorkletNodeFactory = (
     return <T extends TContext | TNativeContext>(
         audioWorkletNodeConstructor: T extends TContext ? TAudioWorkletNodeConstructor : TNativeAudioWorkletNodeConstructor,
         context: T,
-        options: Partial<TAnyRecorderAudioWorkletNodeOptions<T>> = {}
+        options: TAnyRecorderAudioWorkletNodeOptions<T> = {}
     ): T extends TContext ? IRecorderAudioWorkletNode<T> : INativeRecorderAudioWorkletNode => {
         type TAnyAudioWorkletNode = T extends TContext ? IAudioWorkletNode<T> : TNativeAudioWorkletNode;
         type TAnyRecorderAudioWorkletNode = T extends TContext ? IRecorderAudioWorkletNode<T> : INativeRecorderAudioWorkletNode;
