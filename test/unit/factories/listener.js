@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createListener } from '../../../src/factories/listener';
-import { spy } from 'sinon';
 
 describe('createListener()', () => {
     it('should be a function', () => {
@@ -45,7 +44,7 @@ describe('listener', () => {
             let rejectSpy;
 
             beforeEach(() => {
-                rejectSpy = spy();
+                rejectSpy = vi.fn();
 
                 ongoingRequests.set(17, { reject: rejectSpy, resolve });
             });
@@ -53,12 +52,16 @@ describe('listener', () => {
             it('should reject the pending promise', () => {
                 listener({ data: { error: { message }, id: 17 } });
 
-                const [err] = rejectSpy.getCall(0).args;
+                const args = rejectSpy.mock.calls[0];
+
+                expect(args).to.have.a.lengthOf(1);
+
+                const [err] = args;
 
                 expect(err).to.be.an.instanceOf(Error);
                 expect(err.message).to.equal(message);
 
-                expect(rejectSpy).to.have.been.calledOnce.and.calledWithExactly(err);
+                expect(rejectSpy).to.have.been.calledOnce.and.calledWith(err);
             });
 
             it('should remove the request from the ongoing requests', () => {
@@ -88,7 +91,7 @@ describe('listener', () => {
             let resolveSpy;
 
             beforeEach(() => {
-                resolveSpy = spy();
+                resolveSpy = vi.fn();
 
                 ongoingRequests.set(17, { reject, resolve: resolveSpy });
             });
@@ -96,7 +99,7 @@ describe('listener', () => {
             it('should reject the resolve promise', () => {
                 listener({ data: { id: 17, result } });
 
-                expect(resolveSpy).to.have.been.calledOnce.and.calledWithExactly(result);
+                expect(resolveSpy).to.have.been.calledOnce.and.calledWith(result);
             });
 
             it('should remove the request from the ongoing requests', () => {

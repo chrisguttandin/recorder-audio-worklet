@@ -1,7 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-import { beforeEach, describe, expect, it } from 'vitest';
-import { spy, stub } from 'sinon';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createRecorderAudioWorkletNodeFactory } from '../../../src/factories/recorder-audio-worklet-node-factory';
 
 describe('createRecorderAudioWorkletNodeFactory()', () => {
@@ -37,8 +36,8 @@ describe('createRecorderAudioWorkletNode()', () => {
     let subscribe;
 
     beforeEach(() => {
-        audioWorkletNodeConstructorSpy = spy();
-        port = { start: spy() };
+        audioWorkletNodeConstructorSpy = vi.fn();
+        port = { start: vi.fn() };
         audioWorkletNodeConstructor = class {
             constructor(...args) {
                 audioWorkletNodeConstructorSpy(...args);
@@ -49,23 +48,23 @@ describe('createRecorderAudioWorkletNode()', () => {
             }
         };
         context = 'a fake context';
-        createListener = stub();
-        createPostMessage = stub();
+        createListener = vi.fn();
+        createPostMessage = vi.fn();
         listener = 'a fake listener';
-        on = stub();
-        subscribe = spy();
+        on = vi.fn();
+        subscribe = vi.fn();
 
         createRecorderAudioWorkletNode = createRecorderAudioWorkletNodeFactory(createListener, createPostMessage, on, () => {});
 
-        createListener.returns(listener);
-        createPostMessage.callsFake((...args) => ([ongoingRequests] = args));
-        on.returns(subscribe);
+        createListener.mockReturnValue(listener);
+        createPostMessage.mockImplementation((...args) => ([ongoingRequests] = args));
+        on.mockReturnValue(subscribe);
 
         recorderAudioWorkletNode = createRecorderAudioWorkletNode(audioWorkletNodeConstructor, context, { a: 'fake', option: 'object' });
     });
 
     it('should create an AudioWorkletNode', () => {
-        expect(audioWorkletNodeConstructorSpy).to.have.been.calledOnce.and.calledWithExactly(context, 'recorder-audio-worklet-processor', {
+        expect(audioWorkletNodeConstructorSpy).to.have.been.calledOnce.and.calledWith(context, 'recorder-audio-worklet-processor', {
             a: 'fake',
             channelCountMode: 'explicit',
             numberOfInputs: 1,
@@ -76,23 +75,23 @@ describe('createRecorderAudioWorkletNode()', () => {
 
     it('should call createPostMessage()', () => {
         expect(ongoingRequests).to.be.an.instanceOf(Map);
-        expect(createPostMessage).to.have.been.calledOnce.and.calledWithExactly(ongoingRequests, port);
+        expect(createPostMessage).to.have.been.calledOnce.and.calledWith(ongoingRequests, port);
     });
 
     it('should call createListener()', () => {
-        expect(createListener).to.have.been.calledOnce.and.calledWithExactly(ongoingRequests);
+        expect(createListener).to.have.been.calledOnce.and.calledWith(ongoingRequests);
     });
 
     it('should call on()', () => {
-        expect(on).to.have.been.calledOnce.and.calledWithExactly(port, 'message');
+        expect(on).to.have.been.calledOnce.and.calledWith(port, 'message');
     });
 
     it('should call subscribe()', () => {
-        expect(subscribe).to.have.been.calledOnce.and.calledWithExactly(listener);
+        expect(subscribe).to.have.been.calledOnce.and.calledWith(listener);
     });
 
     it('should call start()', () => {
-        expect(port.start).to.have.been.calledOnce.and.calledWithExactly();
+        expect(port.start).to.have.been.calledOnce.and.calledWith();
     });
 
     it('should return an instance of the AudioWorkletNode', () => {
@@ -114,11 +113,11 @@ describe('RecorderAudioWorkletNode', () => {
     let validateState;
 
     beforeEach(() => {
-        postMessage = stub();
-        unsubscribe = spy();
-        validateState = stub();
+        postMessage = vi.fn();
+        unsubscribe = vi.fn();
+        validateState = vi.fn();
 
-        postMessage.resolves();
+        postMessage.mockResolvedValue();
 
         recorderAudioWorkletNode = createRecorderAudioWorkletNodeFactory(
             () => {},
@@ -149,21 +148,21 @@ describe('RecorderAudioWorkletNode', () => {
         it('should call validateState()', () => {
             recorderAudioWorkletNode.pause();
 
-            expect(validateState).to.have.been.calledOnce.and.calledWithExactly(['recording'], 'inactive');
+            expect(validateState).to.have.been.calledOnce.and.calledWith(['recording'], 'inactive');
         });
 
         describe('with validateState() returning regularly', () => {
             it('should call postMessage()', () => {
                 recorderAudioWorkletNode.pause();
 
-                expect(postMessage).to.have.been.calledOnce.and.calledWithExactly({ method: 'pause' });
+                expect(postMessage).to.have.been.calledOnce.and.calledWith({ method: 'pause' });
             });
 
             it('should set the state to paused', () => {
                 recorderAudioWorkletNode.pause();
                 recorderAudioWorkletNode.pause();
 
-                expect(validateState.getCall(1).args[1]).to.equal('paused');
+                expect(validateState.mock.calls[1][1]).to.equal('paused');
             });
 
             it('should return a promise', () => {
@@ -177,7 +176,7 @@ describe('RecorderAudioWorkletNode', () => {
             beforeEach(() => {
                 error = new Error('a fake error');
 
-                validateState.throws(error);
+                validateState.mockThrow(error);
             });
 
             it('should rethrow the errror', () => {
@@ -202,7 +201,7 @@ describe('RecorderAudioWorkletNode', () => {
                 recorderAudioWorkletNode.pause().catch(() => {});
                 recorderAudioWorkletNode.pause().catch(() => {});
 
-                expect(validateState.getCall(1).args[1]).to.not.equal('paused');
+                expect(validateState.mock.calls[1][1]).to.not.equal('paused');
             });
         });
     });
@@ -217,14 +216,14 @@ describe('RecorderAudioWorkletNode', () => {
         it('should call validateState()', () => {
             recorderAudioWorkletNode.record(encoderPort);
 
-            expect(validateState).to.have.been.calledOnce.and.calledWithExactly(['inactive'], 'inactive');
+            expect(validateState).to.have.been.calledOnce.and.calledWith(['inactive'], 'inactive');
         });
 
         describe('with validateState() returning regularly', () => {
             it('should call postMessage()', () => {
                 recorderAudioWorkletNode.record(encoderPort);
 
-                expect(postMessage).to.have.been.calledOnce.and.calledWithExactly(
+                expect(postMessage).to.have.been.calledOnce.and.calledWith(
                     {
                         method: 'record',
                         params: { encoderPort }
@@ -237,7 +236,7 @@ describe('RecorderAudioWorkletNode', () => {
                 recorderAudioWorkletNode.record(encoderPort);
                 recorderAudioWorkletNode.record(encoderPort);
 
-                expect(validateState.getCall(1).args[1]).to.equal('recording');
+                expect(validateState.mock.calls[1][1]).to.equal('recording');
             });
 
             it('should return a promise', () => {
@@ -251,7 +250,7 @@ describe('RecorderAudioWorkletNode', () => {
             beforeEach(() => {
                 error = new Error('a fake error');
 
-                validateState.throws(error);
+                validateState.mockThrow(error);
             });
 
             it('should rethrow the errror', () => {
@@ -276,7 +275,7 @@ describe('RecorderAudioWorkletNode', () => {
                 recorderAudioWorkletNode.record(encoderPort).catch(() => {});
                 recorderAudioWorkletNode.record(encoderPort).catch(() => {});
 
-                expect(validateState.getCall(1).args[1]).to.not.equal('recording');
+                expect(validateState.mock.calls[1][1]).to.not.equal('recording');
             });
         });
     });
@@ -285,21 +284,21 @@ describe('RecorderAudioWorkletNode', () => {
         it('should call validateState()', () => {
             recorderAudioWorkletNode.resume();
 
-            expect(validateState).to.have.been.calledOnce.and.calledWithExactly(['paused'], 'inactive');
+            expect(validateState).to.have.been.calledOnce.and.calledWith(['paused'], 'inactive');
         });
 
         describe('with validateState() returning regularly', () => {
             it('should call postMessage()', () => {
                 recorderAudioWorkletNode.resume();
 
-                expect(postMessage).to.have.been.calledOnce.and.calledWithExactly({ method: 'resume' });
+                expect(postMessage).to.have.been.calledOnce.and.calledWith({ method: 'resume' });
             });
 
             it('should set the state to recording', () => {
                 recorderAudioWorkletNode.resume();
                 recorderAudioWorkletNode.resume();
 
-                expect(validateState.getCall(1).args[1]).to.equal('recording');
+                expect(validateState.mock.calls[1][1]).to.equal('recording');
             });
 
             it('should return a promise', () => {
@@ -313,7 +312,7 @@ describe('RecorderAudioWorkletNode', () => {
             beforeEach(() => {
                 error = new Error('a fake error');
 
-                validateState.throws(error);
+                validateState.mockThrow(error);
             });
 
             it('should rethrow the errror', () => {
@@ -338,7 +337,7 @@ describe('RecorderAudioWorkletNode', () => {
                 recorderAudioWorkletNode.resume().catch(() => {});
                 recorderAudioWorkletNode.resume().catch(() => {});
 
-                expect(validateState.getCall(1).args[1]).to.not.equal('recording');
+                expect(validateState.mock.calls[1][1]).to.not.equal('recording');
             });
         });
     });
@@ -347,27 +346,27 @@ describe('RecorderAudioWorkletNode', () => {
         it('should call validateState()', () => {
             recorderAudioWorkletNode.stop();
 
-            expect(validateState).to.have.been.calledOnce.and.calledWithExactly(['paused', 'recording'], 'inactive');
+            expect(validateState).to.have.been.calledOnce.and.calledWith(['paused', 'recording'], 'inactive');
         });
 
         describe('with validateState() returning regularly', () => {
             it('should call postMessage()', () => {
                 recorderAudioWorkletNode.stop();
 
-                expect(postMessage).to.have.been.calledOnce.and.calledWithExactly({ method: 'stop' });
+                expect(postMessage).to.have.been.calledOnce.and.calledWith({ method: 'stop' });
             });
 
             it('should set the state to stopped', () => {
                 recorderAudioWorkletNode.stop();
                 recorderAudioWorkletNode.stop();
 
-                expect(validateState.getCall(1).args[1]).to.equal('stopped');
+                expect(validateState.mock.calls[1][1]).to.equal('stopped');
             });
 
             it('should call unsubscribe()', async () => {
                 await recorderAudioWorkletNode.stop();
 
-                expect(unsubscribe).to.have.been.calledOnce.and.calledWithExactly();
+                expect(unsubscribe).to.have.been.calledOnce.and.calledWith();
             });
 
             it('should return a promise', () => {
@@ -381,7 +380,7 @@ describe('RecorderAudioWorkletNode', () => {
             beforeEach(() => {
                 error = new Error('a fake error');
 
-                validateState.throws(error);
+                validateState.mockThrow(error);
             });
 
             it('should rethrow the errror', () => {
@@ -406,7 +405,7 @@ describe('RecorderAudioWorkletNode', () => {
                 recorderAudioWorkletNode.stop().catch(() => {});
                 recorderAudioWorkletNode.stop().catch(() => {});
 
-                expect(validateState.getCall(1).args[1]).to.not.equal('stopped');
+                expect(validateState.mock.calls[1][1]).to.not.equal('stopped');
             });
 
             it('should not call unsubscribe()', () => {

@@ -1,22 +1,24 @@
 import { AudioContext, AudioWorkletNode } from 'standardized-audio-context';
 import { addRecorderAudioWorkletModule, createRecorderAudioWorkletNode, isSupported } from '../../src/module';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { spy } from 'sinon';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('module', () => {
     describe('addRecorderAudioWorkletModule()', () => {
         it('should call the given function with an URL', () => {
-            const addAudioWorkletModule = spy();
+            const addAudioWorkletModule = vi.fn();
 
             addRecorderAudioWorkletModule(addAudioWorkletModule);
 
             expect(addAudioWorkletModule).to.have.been.calledOnce;
 
-            const { args } = addAudioWorkletModule.getCall(0);
+            const args = addAudioWorkletModule.mock.calls[0];
 
             expect(args).to.have.a.lengthOf(1);
-            expect(args[0]).to.be.a('string');
-            expect(args[0]).to.match(/^blob:/);
+
+            const [url] = args;
+
+            expect(url).to.be.a('string');
+            expect(url).to.match(/^blob:/);
         });
     });
 

@@ -1,5 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { spy, stub } from 'sinon';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPostMessageFactory } from '../../../src/factories/post-message-factory';
 
 describe('createPostMessageFactory()', () => {
@@ -32,12 +31,12 @@ describe('postMessage()', () => {
 
     beforeEach(() => {
         ongoingRequests = new Map();
-        generateUniqueNumber = stub();
-        port = { postMessage: spy() };
+        generateUniqueNumber = vi.fn();
+        port = { postMessage: vi.fn() };
 
         postMessage = createPostMessageFactory(generateUniqueNumber)(ongoingRequests, port);
 
-        generateUniqueNumber.returns(32);
+        generateUniqueNumber.mockReturnValue(32);
     });
 
     it('should return a promise', () => {
@@ -47,7 +46,7 @@ describe('postMessage()', () => {
     it('should generate a unique number', () => {
         postMessage({ a: ['fake', 'message'] });
 
-        expect(generateUniqueNumber).to.have.been.calledOnce.and.calledWithExactly(ongoingRequests);
+        expect(generateUniqueNumber).to.have.been.calledOnce.and.calledWith(ongoingRequests);
     });
 
     it('should add the request to the ongoing requests', () => {
@@ -63,7 +62,7 @@ describe('postMessage()', () => {
     it('should send the message', () => {
         postMessage({ a: ['fake', 'message'] }, ['a', 'fake', 'array', 'of', 'transferables']);
 
-        expect(port.postMessage).to.have.been.calledOnce.and.calledWithExactly({ a: ['fake', 'message'], id: 32 }, [
+        expect(port.postMessage).to.have.been.calledOnce.and.calledWith({ a: ['fake', 'message'], id: 32 }, [
             'a',
             'fake',
             'array',

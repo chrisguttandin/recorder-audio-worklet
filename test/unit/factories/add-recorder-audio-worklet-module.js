@@ -1,5 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { spy, stub } from 'sinon';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createAddRecorderAudioWorkletModule } from '../../../src/factories/add-recorder-audio-worklet-module';
 
 describe('createAddRecorderAudioWorkletModule()', () => {
@@ -23,8 +22,8 @@ describe('addRecorderAudioWorkletModule', () => {
     let worklet;
 
     beforeEach(() => {
-        addAudioWorkletModule = spy();
-        blobConstructorSpy = spy();
+        addAudioWorkletModule = vi.fn();
+        blobConstructorSpy = vi.fn();
         blobConstructor = class {
             constructor(...args) {
                 blobConstructorSpy(...args);
@@ -34,20 +33,20 @@ describe('addRecorderAudioWorkletModule', () => {
         };
         url = 'a fake url';
         urlConstructor = {
-            createObjectURL: stub(),
-            revokeObjectURL: spy()
+            createObjectURL: vi.fn(),
+            revokeObjectURL: vi.fn()
         };
         worklet = 'a fake worklet';
 
         addRecorderAudioWorkletModule = createAddRecorderAudioWorkletModule(blobConstructor, urlConstructor, worklet);
 
-        urlConstructor.createObjectURL.returns(url);
+        urlConstructor.createObjectURL.mockReturnValue(url);
     });
 
     it('should create a Blob', () => {
         addRecorderAudioWorkletModule(addAudioWorkletModule);
 
-        expect(blobConstructorSpy).to.have.been.calledOnce.and.calledWithExactly([worklet], {
+        expect(blobConstructorSpy).to.have.been.calledOnce.and.calledWith([worklet], {
             type: 'application/javascript; charset=utf-8'
         });
     });
@@ -55,19 +54,19 @@ describe('addRecorderAudioWorkletModule', () => {
     it('should create a URL', () => {
         addRecorderAudioWorkletModule(addAudioWorkletModule);
 
-        expect(urlConstructor.createObjectURL).to.have.been.calledOnce.and.calledWithExactly(blob);
+        expect(urlConstructor.createObjectURL).to.have.been.calledOnce.and.calledWith(blob);
     });
 
     it('should call addAudioWorkletModule()', () => {
         addRecorderAudioWorkletModule(addAudioWorkletModule);
 
-        expect(addAudioWorkletModule).to.have.been.calledOnce.and.calledWithExactly(url);
+        expect(addAudioWorkletModule).to.have.been.calledOnce.and.calledWith(url);
     });
 
     it('should revoke the URL', async () => {
         await addRecorderAudioWorkletModule(addAudioWorkletModule);
 
-        expect(urlConstructor.revokeObjectURL).to.have.been.calledOnce.and.calledWithExactly(url);
+        expect(urlConstructor.revokeObjectURL).to.have.been.calledOnce.and.calledWith(url);
     });
 
     it('should return a promise', () => {
