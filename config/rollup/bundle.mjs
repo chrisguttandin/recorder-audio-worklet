@@ -7,6 +7,7 @@ import webpack from 'webpack';
 // eslint-disable-next-line node/file-extension-in-import
 import webpackConfig from '../webpack/worklet-es5.mjs';
 
+// eslint-disable-next-line node/no-sync
 const workletFile = readFileSync('src/worklet/worklet.ts', 'utf8');
 const result = /export\sconst\sworklet\s=\s`(?<workletString>.*)`;/g.exec(workletFile);
 
