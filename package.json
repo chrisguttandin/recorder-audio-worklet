@@ -61,6 +61,7 @@
     "main": "build/es5/bundle.js",
     "module": "build/es2019/module.js",
     "name": "recorder-audio-worklet",
+    "packageManager": "npm@12",
     "repository": {
         "type": "git",
         "url": "https://github.com/chrisguttandin/recorder-audio-worklet.git"
